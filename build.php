@@ -46,7 +46,7 @@ foreach ($packages as $vendor => $obj) {
 }
 echo "[INFO]: Loaded " . count($packages) . " packages" . PHP_EOL;
 if (is_dir($from . "src")) {
-	copyDirectory($from . "src", $to . "src");
+	copyDirectory($from . "src", $to . "src/HQGames/Core");
 }
 if (is_file($from . "LICENSE")) {
 	file_put_contents($to . "LICENSE", file_get_contents($from . "LICENSE"));

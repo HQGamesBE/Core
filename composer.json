@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "{namespace}\\": "src/"
+            "HQGames\\Core\\": "src/"
         }
     },
     "authors": [
