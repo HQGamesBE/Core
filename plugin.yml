@@ -1,0 +1,9 @@
+name: "plugin_name"
+version: "1.0"
+author: "xxAROX"
+website: "https://github.com/xxAROX/"
+description: "plugin_name by xxAROX."
+
+api:
+  - "4.0.0"
+main: xxAROX\plugin_name\plugin_name

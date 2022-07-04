@@ -1,0 +1,39 @@
+{
+    "name": "xxarox/template-for-plugins",
+    "version": "1.0",
+    "license": "LICENSE",
+    "config": {
+        "github-oauth": {
+            "github.com": "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"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "{namespace}\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jan Sohn / xxAROX",
+            "email": "arox.email.0@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs", 
+            "url":  "git@github.com:xxAROX/plugin-security.git"
+        },
+        {
+            "type": "vcs", 
+            "url":  "git@github.com:xxAROX/xxTOOLS.git"
+        } 
+    ],
+    "require": {
+        "ext-yaml": "*"
+    },
+    "require-dev": {
+        "xxarox/plugin-security": "dev-main",
+        "xxarox/xxtools": "dev-main",
+        "pocketmine/pocketmine-mp": "^4.2"
+    }
+}
