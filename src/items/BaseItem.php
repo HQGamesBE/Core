@@ -62,11 +62,11 @@ trait BaseItem{
 	 */
 	public function onClickAir(Player $player, Vector3 $directionVector): ItemUseResult{
 		/** @var Item $this */
-		$result = ($this->holder->hasItemCooldown($this) ? ItemUseResult::FAIL() : ItemUseResult::SUCCESS());
+		if ($this->holder->hasItemCooldown($this)) return ItemUseResult::FAIL();
 		if (!is_null($this->useCallback)) ($this->useCallback)($this->holder);
-		if (!is_null($this->clickAirCallback)) $result = ($this->clickAirCallback)($this->holder, $directionVector);
+		if (!is_null($this->clickAirCallback)) ($this->clickAirCallback)($this->holder, $directionVector);
 		$this->holder->resetItemCooldown($this, 10);
-		return $result;
+		return ItemUseResult::FAIL();
 	}
 
 	/**
@@ -80,11 +80,11 @@ trait BaseItem{
 	 */
 	public function onInteractBlock(Player $player, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector): ItemUseResult{
 		/** @var Item $this */
-		$result = ($this->holder->hasItemCooldown($this) ? ItemUseResult::FAIL() : ItemUseResult::SUCCESS());
+		if ($this->holder->hasItemCooldown($this)) return ItemUseResult::FAIL();
 		if (!is_null($this->useCallback)) ($this->useCallback)($this->holder);
-		if (!is_null($this->blockInteractCallback)) $result = ($this->blockInteractCallback)($this->holder, $blockReplace, $blockClicked, $face, $clickVector);
+		if (!is_null($this->blockInteractCallback)) ($this->blockInteractCallback)($this->holder, $blockReplace, $blockClicked, $face, $clickVector);
 		$this->holder->resetItemCooldown($this, 10);
-		return $result;
+		return ItemUseResult::FAIL();
 	}
 
 	/**
@@ -94,10 +94,10 @@ trait BaseItem{
 	 */
 	public function onDestroyBlock(Block $block): bool{
 		/** @var Item $this */
-		$result = !$this->holder->hasItemCooldown($this);
-		if (!is_null($this->blockDestroyCallback)) $result = ($this->blockDestroyCallback)($this->holder);
+		if ($this->holder->hasItemCooldown($this)) return false;
+		if (!is_null($this->blockDestroyCallback)) ($this->blockDestroyCallback)($this->holder);
 		$this->holder->resetItemCooldown($this, 10);
-		return $result;
+		return false;
 	}
 
 	/**
@@ -107,11 +107,11 @@ trait BaseItem{
 	 */
 	public function onReleaseUsing(Player $player): ItemUseResult{
 		/** @var Item $this */
-		$result = ($this->holder->hasItemCooldown($this) ? ItemUseResult::FAIL() : ItemUseResult::SUCCESS());
+		if ($this->holder->hasItemCooldown($this)) return ItemUseResult::FAIL();
 		if (!is_null($this->useCallback)) ($this->useCallback)($this->holder);
-		if (!is_null($this->releaseUsingCallback)) $result = ($this->releaseUsingCallback)($this->holder);
-		$this->holder->resetItemCooldown($this, 10);
-		return $result;
+		if (!is_null($this->releaseUsingCallback)) ($this->releaseUsingCallback)($this->holder);
+		$this->holder->resetItemCooldown($this);
+		return ItemUseResult::FAIL();
 	}
 
 	/**
@@ -121,11 +121,11 @@ trait BaseItem{
 	 */
 	public function onAttackEntity(Entity $victim): bool{
 		/** @var Item $this */
-		$result = !$this->holder->hasItemCooldown($this);
+		if ($this->holder->hasItemCooldown($this)) return false;
 		if (!is_null($this->useCallback)) ($this->useCallback)($this->holder);
-		if (!is_null($this->entityAttackCallback)) $result = ($this->entityAttackCallback)($this->holder, $victim);
-		$this->holder->resetItemCooldown($this, 10);
-		return $result;
+		if (!is_null($this->entityAttackCallback)) ($this->entityAttackCallback)($this->holder, $victim);
+		$this->holder->resetItemCooldown($this);
+		return false;
 	}
 
 	/**
@@ -136,11 +136,11 @@ trait BaseItem{
 	 */
 	public function onInteractEntity(Player $player, Entity $entity): bool{
 		/** @var Item $this */
-		$result = !$this->holder->hasItemCooldown($this);
-		if (!is_null($this->useCallback)) ($this->useCallback)();
-		if (!is_null($this->entityInteractCallback)) $result = ($this->entityInteractCallback)($this->holder, $entity);
-		$this->holder->resetItemCooldown($this, 10);
-		return $result;
+		if ($this->holder->hasItemCooldown($this)) return false;
+		if (!is_null($this->useCallback)) ($this->useCallback)($this->holder);
+		if (!is_null($this->entityInteractCallback)) ($this->entityInteractCallback)($this->holder, $entity);
+		$this->holder->resetItemCooldown($this);
+		return false;
 	}
 
 	/**
@@ -153,7 +153,7 @@ trait BaseItem{
 		/** @var Item $this */
 		$this->holder = $holder;
 		$this->inventories = [ $this->holder->getInventory(), $this->holder->getOffHandInventory(), $this->holder->getCursorInventory(), $this->holder->getArmorInventory(), $this->holder->getCraftingGrid(), $this->holder->getEnderInventory() ];
-		$this->setCustomName("§r${custom_name}§r");
+		if (!empty($custom_name)) $this->setCustomName("§r${custom_name}§r");
 	}
 
 	/**
@@ -182,7 +182,7 @@ trait BaseItem{
 
 	/**
 	 * Function setUseCallback
-	 * @param null|Closure $callback (Player $player): void
+	 * @param null|Closure $callback (Player $player)
 	 * @return static
 	 */
 	public function setUseCallback(?Closure $callback = null): static{
@@ -196,12 +196,12 @@ trait BaseItem{
 
 	/**
 	 * Function setEntityInteractCallback
-	 * @param null|Closure $callback (Player $player, Entity $entity): bool
+	 * @param null|Closure $callback (Player $player, Entity $entity)
 	 * @return $this
 	 */
 	public function setEntityInteractCallback(?Closure $callback = null): static{
 		$this->testCallback(new CallbackType(
-			new ReturnType(BuiltInTypes::BOOL),
+			new ReturnType(),
 			new ParameterType("player", Player::class),
 			new ParameterType("entity", Entity::class),
 		), $callback);
@@ -211,12 +211,12 @@ trait BaseItem{
 
 	/**
 	 * Function setEntityAttackCallback
-	 * @param null|Closure $callback (Player $player, Entity $entity): bool
+	 * @param null|Closure $callback (Player $player, Entity $entity)
 	 * @return $this
 	 */
 	public function setEntityAttackCallback(?Closure $callback = null): static{
 		$this->testCallback(new CallbackType(
-			new ReturnType(BuiltInTypes::BOOL),
+			new ReturnType(),
 			new ParameterType("player", Player::class),
 			new ParameterType("entity", Entity::class),
 		), $callback);
@@ -226,12 +226,12 @@ trait BaseItem{
 
 	/**
 	 * Function setBlockInteractCallback
-	 * @param null|Closure $callback (Player $player, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector): bool
+	 * @param null|Closure $callback (Player $player, Block $blockReplace, Block $blockClicked, int $face, Vector3 $clickVector)
 	 * @return $this
 	 */
 	public function setBlockInteractCallback(?Closure $callback = null): static{
 		$this->testCallback(new CallbackType(
-			new ReturnType(BuiltInTypes::BOOL),
+			new ReturnType(),
 			new ParameterType("player", Player::class),
 			new ParameterType("blockReplace", Block::class),
 			new ParameterType("blockClicked", Block::class),
@@ -244,12 +244,12 @@ trait BaseItem{
 
 	/**
 	 * Function setBlockDestroyCallback
-	 * @param null|Closure $callback (Player $player, Block $block): bool
+	 * @param null|Closure $callback (Player $player, Block $block)
 	 * @return $this
 	 */
 	public function setBlockDestroyCallback(?Closure $callback = null): static{
 		$this->testCallback(new CallbackType(
-			new ReturnType(BuiltInTypes::BOOL),
+			new ReturnType(),
 			new ParameterType("player", Player::class),
 			new ParameterType("block", Block::class),
 		), $callback);
@@ -259,12 +259,12 @@ trait BaseItem{
 
 	/**
 	 * Function setClickAirCallback
-	 * @param null|Closure $callback (Player $player, Vector3 $clickVector): ItemUseResult
+	 * @param null|Closure $callback (Player $player, Vector3 $clickVector)
 	 * @return $this
 	 */
 	public function setClickAirCallback(?Closure $callback = null): static{
 		$this->testCallback(new CallbackType(
-			new ReturnType(ItemUseResult::class),
+			new ReturnType(),
 			new ParameterType("player", Player::class),
 			new ParameterType("directionVector", Vector3::class),
 		), $callback);
@@ -274,12 +274,12 @@ trait BaseItem{
 
 	/**
 	 * Function setReleaseUsingCallback
-	 * @param null|Closure $callback (Player $player): ItemUseResult
+	 * @param null|Closure $callback (Player $player)
 	 * @return $this
 	 */
 	public function setReleaseUsingCallback(?Closure $callback = null): static{
 		$this->testCallback(new CallbackType(
-			new ReturnType(ItemUseResult::class),
+			new ReturnType(),
 			new ParameterType("player", Player::class),
 		), $callback);
 		$this->releaseUsingCallback = $callback;
