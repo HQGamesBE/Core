@@ -122,7 +122,7 @@ trait BaseItem{
 	public function onAttackEntity(Entity $victim): bool{
 		/** @var Item $this */
 		$result = !$this->holder->hasItemCooldown($this);
-		if (!is_null($this->useCallback)) ($this->useCallback)();
+		if (!is_null($this->useCallback)) ($this->useCallback)($this->holder);
 		if (!is_null($this->entityAttackCallback)) $result = ($this->entityAttackCallback)($this->holder, $victim);
 		$this->holder->resetItemCooldown($this, 10);
 		return $result;
