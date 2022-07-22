@@ -10,6 +10,9 @@ namespace HQGames\Core\commands\commando;
 use HQGames\Bridge\Bridge;
 use HQGames\Bridge\Cache;
 use HQGames\Bridge\player\BridgePlayer;
+use HQGames\Permissions;
+use JetBrains\PhpStorm\Pure;
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\CommandException;
 use pocketmine\console\ConsoleCommandSender;
@@ -19,6 +22,9 @@ use pocketmine\network\mcpe\protocol\types\command\CommandData;
 use pocketmine\network\mcpe\protocol\types\command\CommandEnum;
 use pocketmine\network\mcpe\protocol\types\command\CommandParameter;
 use pocketmine\network\mcpe\protocol\types\PlayerPermissions;
+use pocketmine\permission\DefaultPermissions;
+use pocketmine\permission\Permission;
+use pocketmine\permission\PermissionManager;
 use pocketmine\Server;
 
 
@@ -30,7 +36,7 @@ use pocketmine\Server;
  * @ide PhpStorm
  * @project Core
  */
-abstract class CommandoCommand extends \pocketmine\command\Command{
+abstract class CommandoCommand extends Command{
 	/** White & Gray */
 	const FLAG_NORMAL = 0;
 	/** White & Aqua */
@@ -55,6 +61,8 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 
 	private CommandData $commandData;
 	private ?string $generalPermission = null;
+	private bool $isPlayerCommand;
+	private bool $isConsoleCommand;
 	private bool $enableHelpArgument = true;
 	private ?string $helpArgumentText = null;
 
@@ -65,14 +73,18 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 	 * @param null|Translatable|string $usageMessage
 	 * @param array $aliases
 	 * @param CommandParameter[][] $overloads
+	 * @param bool $isConsoleCommand
+	 * @param bool $isPlayerCommand
 	 */
-	public function __construct(string $name, Translatable|string $description = "", Translatable|string|null $usageMessage = null, array $aliases = [], array $overloads = []){
+	public function __construct(string $name, Translatable|string $description = "", Translatable|string|null $usageMessage = null, array $aliases = [], array $overloads = [], bool $isConsoleCommand = true, bool $isPlayerCommand = true){
 		if (str_starts_with("%command.description.", $description) || str_starts_with("command.description.", $description)) {
 			$description = "hqgames.command.description." . Cache::getInstance()->secret . "." . str_replace("%", "", $description);
 		}
 		if (strlen($description) > 0 and $description[0] == "%") {
 			$description = Server::getInstance()->getLanguage()->translateString($description);
 		}
+		$this->isPlayerCommand = $isPlayerCommand;
+		$this->isConsoleCommand = $isConsoleCommand;
 		parent::__construct($name, $description, $usageMessage, $aliases);
 
 		$this->commandData = new CommandData(
@@ -150,7 +162,7 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 	 * @return bool
 	 */
 	public final function testForPlayerSilent(CommandSender $target): bool{
-		if (!$target instanceof CorePlayer) {
+		if (!$target instanceof BridgePlayer) {
 			return false;
 		}
 		return true;
@@ -175,9 +187,7 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 				$permission = $ex[0];
 			}
 			if (PermissionManager::getInstance()->getPermission($permission) === null) {
-				$opRoot = PermissionManager::getInstance()->getPermission(DefaultPermissions::ROOT_OPERATOR);
-				PermissionManager::getInstance()->addPermission($permission = new Permission($permission, "Allows to use the entire '/{$this->getName()}' command."));
-				$opRoot->addChild($permission->getName(), true);
+				Permissions::getInstance()->registerPermission(new Permission($permission, "Allows to use the entire '/{$this->getName()}' command."));
 			}
 		}
 		$this->generalPermission = $permission;
@@ -210,7 +220,7 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 	 */
 	public final function execute(CommandSender $sender, string $commandLabel, array $args){
 		if ($this->enableHelpArgument && isset($args[0]) && (strtolower($args[0]) == "help" || $args[0] == "?")) {
-			$sender->sendMessage($this->helpArgumentText ?? ($sender instanceof CorePlayer ? $sender->translate("%message.command.usage", [$this->getUsage()]) : "§cUsage: §7" . $this->getUsage()));
+			$sender->sendMessage($this->helpArgumentText ?? ($sender instanceof BridgePlayer ? $sender->translate("%message.command.usage", [$this->getUsage()]) : "§cUsage: §7" . $this->getUsage()));
 			return;
 		}
 		$this->onRun($sender, $commandLabel, $args);
@@ -218,12 +228,12 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 
 	/**
 	 * Function onRun
-	 * @param CorePlayer|CommandSender $sender
+	 * @param BridgePlayer|CommandSender $sender
 	 * @param string $typedCommand
 	 * @param array $args
 	 * @return void
 	 */
-	abstract protected function onRun(CorePlayer|CommandSender $sender, string $typedCommand, array $args): void;
+	abstract protected function onRun(BridgePlayer|CommandSender $sender, string $typedCommand, array $args): void;
 
 	/**
 	 * Function sendSyntaxError
@@ -396,5 +406,21 @@ abstract class CommandoCommand extends \pocketmine\command\Command{
 
 	static function registeredPlayerParameter(bool $optional = true): CommandParameter{
 		return CommandParameter::enum("target", new CommandEnum("registeredPlayers", array_keys(Cache::getInstance()->registeredPlayers)), self::FLAG_AQUA, $optional);
+	}
+
+	/**
+	 * Function isConsoleCommand
+	 * @return bool
+	 */
+	public function isConsoleCommand(): bool{
+		return $this->isConsoleCommand;
+	}
+
+	/**
+	 * Function isPlayerCommand
+	 * @return bool
+	 */
+	public function isPlayerCommand(): bool{
+		return $this->isPlayerCommand;
 	}
 }
