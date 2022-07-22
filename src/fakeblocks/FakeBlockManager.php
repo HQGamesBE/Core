@@ -7,7 +7,8 @@
 declare(strict_types=1);
 namespace HQGames\Core\fakeblocks;
 use Exception;
-use HQGames\Core\Core;
+use HQGames\Core\addons\Addon;
+use HQGames\Core\addons\AddonSingletonTrait;
 use HQGames\Core\simplepackethandler\SimplePacketHandler;
 use pocketmine\block\Block;
 use pocketmine\event\EventPriority;
@@ -18,10 +19,12 @@ use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\UpdateBlockPacket;
 use pocketmine\player\Player;
+use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\world\format\Chunk;
 use pocketmine\world\Position;
 use pocketmine\world\World;
+use TypeError;
 
 
 /**
@@ -32,43 +35,43 @@ use pocketmine\world\World;
  * @ide PhpStorm
  * @project Core
  */
-class FakeBlockManager implements Listener{
-	use SingletonTrait {
-		setInstance as private;
-		reset as private;
-	}
-
-
+class FakeBlockManager extends Addon implements Listener{
+	use AddonSingletonTrait;
 	/** @var array<int, array<int, FakeBlock[]>> */
 	private array $fakeblocks = [];
 
-	private function __construct(){
-		self::setInstance($this);
+	/**
+	 * Function getVersion
+	 * @return string
+	 */
+	public static function getVersion(): string{
+		return "0.0.2";
 	}
 
-	private static bool $isRegistered = false;
-
-	public static function isRegistered(): bool{
-		return self::$isRegistered;
+	/**
+	 * Function getAuthors
+	 * @return string[]
+	 */
+	public static function getAuthors(): array{
+		return [
+			"IvanCraft623",
+			"xxAROX"
+		];
 	}
 
-	public static function register(Core $registrant): void{
-		if (self::$isRegistered)
-			throw new Exception("FakeBlock listener is already registered by Core.");
-		$instance = new self();
-		$registrant->getServer()->getPluginManager()->registerEvents($instance, $registrant);
-		$interceptor = SimplePacketHandler::createInterceptor($registrant, EventPriority::HIGHEST);
-		$interceptor->interceptOutgoing(function (UpdateBlockPacket $packet, NetworkSession $target) use ($instance): bool{
+	public function onEnable(): void{
+		$this->registerListener($this);
+		$interceptor = SimplePacketHandler::getInstance()->createInterceptor(EventPriority::HIGHEST);
+		$interceptor->interceptOutgoing(function (UpdateBlockPacket $packet, NetworkSession $target): bool{
 			$player = $target->getPlayer();
 			if ($player !== null) {
 				$bpos = $packet->blockPosition;
-				foreach ($instance->getFakeBlocksAtPosition(new Position($bpos->getX(), $bpos->getY(), $bpos->getZ(), $player->getWorld())) as $fakeblock) {
+				foreach (FakeBlockManager::getInstance()->getFakeBlocks(new Position($bpos->getX(), $bpos->getY(), $bpos->getZ(), $player->getWorld())) as $fakeblock) {
 					if ($fakeblock->isViewer($player)) {
-						if ($fakeblock->isInBlockUpdatePacketQueue($player)) {
+						if ($fakeblock->isInBlockUpdatePacketQueue($player))
 							$fakeblock->blockUpdatePacketQueue($player, false);
-						} else {
+						else
 							return false;
-						}
 					}
 				}
 			}
@@ -76,7 +79,11 @@ class FakeBlockManager implements Listener{
 		});
 	}
 
-	public function create(Block $block, Position $position, ?array $viewers = null): FakeBlock{
+	public function onDisable(): void{
+
+	}
+
+	public function createFakeBlock(Block $block, Position $position, ?array $viewers = null): FakeBlock{
 		$pos = Position::fromObject($position->floor(), $position->getWorld());
 		$fakeblock = new FakeBlock($block, $pos, $viewers);
 		$chunkHash = World::chunkHash($pos->getFloorX() >> Chunk::COORD_BIT_SIZE, $pos->getFloorZ() >> Chunk::COORD_BIT_SIZE);
@@ -84,10 +91,13 @@ class FakeBlockManager implements Listener{
 		return $fakeblock;
 	}
 
-	public function destroy(FakeBlock $fakeblock): void{
-		foreach ($fakeblock->getViewers() as $viewer) {
-			$fakeblock->removeViewer($viewer);
-		}
+	/**
+	 * Function destroy
+	 * @param FakeBlock $fakeblock
+	 * @return void
+	 */
+	public function destroyFakeBlock(FakeBlock $fakeblock): void{
+		foreach ($fakeblock->getViewers() as $viewer) $fakeblock->removeViewer($viewer);
 		$pos = $fakeblock->getPosition();
 		$chunkHash = World::chunkHash($pos->getFloorX() >> Chunk::COORD_BIT_SIZE, $pos->getFloorZ() >> Chunk::COORD_BIT_SIZE);
 		unset($this->fakeblocks[spl_object_id($pos->getWorld())][$chunkHash][spl_object_id($fakeblock)]);
@@ -102,10 +112,11 @@ class FakeBlockManager implements Listener{
 	}
 
 	/**
-	 * Returns the FakeBlocks in a Position
-	 * @return FakeBlock[]
+	 * Function getFakeBlocks
+	 * @param Position $position
+	 * @return FakeBlock[] NOTE: Multiple FakeBlocks can be exists at the same position.
 	 */
-	public function getFakeBlocksAtPosition(Position $position): array{
+	public function getFakeBlocks(Position $position): array{
 		$pos = $position->floor();
 		$fakeblocks = [];
 		foreach ($this->getFakeBlocksAt($position->getWorld(), $pos->getX() >> Chunk::COORD_BIT_SIZE, $pos->getZ() >> Chunk::COORD_BIT_SIZE) as $fakeblock) {
@@ -117,9 +128,11 @@ class FakeBlockManager implements Listener{
 	}
 
 	/**
+	 * Function createBlockUpdatePackets
+	 * @param Player $player
 	 * @param array<int, Block|FakeBlock> $blocks
-	 *
 	 * @return UpdateBlockPacket[]
+	 * @internal
 	 */
 	public function createBlockUpdatePackets(Player $player, array $blocks): array{
 		$packets = [];
@@ -128,28 +141,29 @@ class FakeBlockManager implements Listener{
 			if ($b instanceof FakeBlock) {
 				$b->blockUpdatePacketQueue($player, true);
 				$fullId = $b->getBlock()->getFullId();
-			} else if ($b instanceof Block) {
+			} else if ($b instanceof Block)
 				$fullId = $b->getFullId();
-			} else {
-				throw new \TypeError("Expected Block or FakeBlock in blocks array, got " . (is_object($b)
-						? get_class($b) : gettype($b)));
-			}
+			else
+				throw new TypeError("Expected Block or FakeBlock in blocks array, got " . (is_object($b) ? get_class($b) : gettype($b)));
+
 			$blockPosition = BlockPosition::fromVector3($b->getPosition());
 			$packets[] = UpdateBlockPacket::create($blockPosition, $blockMapping->toRuntimeId($fullId), UpdateBlockPacket::FLAG_NETWORK, UpdateBlockPacket::DATA_LAYER_NORMAL);
 		}
 		return $packets;
 	}
 
-	public function onChunkSend(PlayerPostChunkSendEvent $event): void{
+	/**
+	 * Function PlayerPostChunkSendEvent
+	 * @param PlayerPostChunkSendEvent $event
+	 * @return void
+	 * @priority MONITOR
+	 */
+	public function PlayerPostChunkSendEvent(PlayerPostChunkSendEvent $event): void{
 		$player = $event->getPlayer();
 		$fakeblocks = [];
 		foreach ($this->getFakeBlocksAt($player->getWorld(), $event->getChunkX(), $event->getChunkZ()) as $fakeblock) {
-			if ($fakeblock->isViewer($player)) {
-				$fakeblocks[] = $fakeblock;
-			}
+			if ($fakeblock->isViewer($player)) $fakeblocks[] = $fakeblock;
 		}
-		foreach ($this->createBlockUpdatePackets($player, $fakeblocks) as $packet) {
-			$player->getNetworkSession()->sendDataPacket($packet);
-		}
+		foreach ($this->createBlockUpdatePackets($player, $fakeblocks) as $packet) $player->getNetworkSession()->sendDataPacket($packet);
 	}
 }

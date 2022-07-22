@@ -9,6 +9,7 @@ namespace HQGames\Core\simplepackethandler\monitor;
 use Closure;
 use HQGames\Core\Core;
 use JetBrains\PhpStorm\Pure;
+use pocketmine\plugin\PluginBase;
 
 
 /**
@@ -22,7 +23,7 @@ use JetBrains\PhpStorm\Pure;
 class PacketMonitor implements IPacketMonitor{
 	private PacketMonitorListener $listener;
 
-	#[Pure] public function __construct(Core $register, bool $handleCancelled){
+	#[Pure] public function __construct(PluginBase $register, bool $handleCancelled){
 		$this->listener = new PacketMonitorListener($register, $handleCancelled);
 	}
 
@@ -43,6 +44,11 @@ class PacketMonitor implements IPacketMonitor{
 
 	public function unregisterOutgoingMonitor(Closure $handler): IPacketMonitor{
 		$this->listener->unregisterOutgoingMonitor($handler);
+		return $this;
+	}
+
+	public function unregisterAll(): IPacketMonitor{
+		$this->listener->unregisterAll();
 		return $this;
 	}
 }

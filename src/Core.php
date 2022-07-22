@@ -7,9 +7,16 @@
 
 declare(strict_types=1);
 namespace HQGames\Core;
+use HQGames\Core\addons\AddonManager;
+use HQGames\Core\commands\commando\Commando;
+use HQGames\Core\commands\TestCommand;
 use HQGames\Core\fakeblocks\FakeBlockManager;
+use HQGames\Core\simplepackethandler\SimplePacketHandler;
+use pocketmine\permission\Permission;
+use pocketmine\permission\PermissionManager;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
+use ReflectionClass;
 
 
 /**
@@ -30,6 +37,7 @@ class Core extends PluginBase{
 	 */
 	public function onLoad(): void{
 		$this->getLogger()->info("Core is loading...");
+		include_once __DIR__ . "/functions.php";
 	}
 
 	/**
@@ -37,7 +45,9 @@ class Core extends PluginBase{
 	 * @return void
 	 */
 	public function onEnable(): void{
-		FakeBlockManager::register($this);
+		$this->registerAddons();
+		$this->registerCommands();
+		$this->registerListeners();
 
 		$this->getLogger()->info("Core is enabled!");
 	}
@@ -47,6 +57,51 @@ class Core extends PluginBase{
 	 * @return void
 	 */
 	public function onDisable(): void{
+		AddonManager::getInstance()->unregisterAll();
 		$this->getLogger()->info("Core is disabled!");
+	}
+
+	/**
+	 * Function registerCommands
+	 * @return void
+	 */
+
+	private function registerCommands(): void{
+		foreach ((new ReflectionClass(Permissions::class))->getConstants() as $constant => $permission) {
+			PermissionManager::getInstance()->addPermission(new Permission($permission, "Use the {$constant} command"));
+		}
+		$commands = [
+			new TestCommand,
+		];
+		foreach ($commands as $command) $this->getServer()->getCommandMap()->register(mb_strtolower($this->getDescription()->getName()), $command);
+	}
+
+	/**
+	 * Function registerListeners
+	 * @return void
+	 */
+	private function registerListeners(): void{
+	}
+
+	/**
+	 * Function registerListeners
+	 * @return void
+	 */
+	private function registerAddons(): void{
+		new AddonManager($this);
+		$this->getLogger()->info("Registering addons...");
+		$addons = [
+			SimplePacketHandler::class,
+			Commando::class,
+			FakeBlockManager::class,
+		];
+		foreach ($addons as $addon) {
+			if (!class_exists($addon)) {
+				$this->getLogger()->error("Addon '{$addon}' is not found!");
+				continue;
+			}
+			AddonManager::getInstance()->registerAddon($addon);
+			$this->getLogger()->debug("Addon '{$addon}' is registered!");
+		}
 	}
 }

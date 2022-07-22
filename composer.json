@@ -10,7 +10,10 @@
     "autoload": {
         "psr-4": {
             "HQGames\\Core\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "authors": [
         {
@@ -29,8 +32,9 @@
         } 
     ],
     "require": {
-        "ext-yaml": "*"
-    },
+        "ext-yaml": "*",
+		"ext-mbstring": "*"
+	},
     "require-dev": {
         "xxarox/plugin-security": "dev-main",
         "xxarox/xxtools": "dev-main",

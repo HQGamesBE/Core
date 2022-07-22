@@ -46,4 +46,10 @@ interface IPacketInterceptor{
 	 * @return IPacketInterceptor
 	 */
 	public function unregisterOutgoingInterceptor(Closure $handler): IPacketInterceptor;
+
+	/**
+	 * Function unregisterAll
+	 * @return IPacketInterceptor
+	 */
+	public function unregisterAll(): IPacketInterceptor;
 }

@@ -6,4 +6,4 @@ description: "Core by xxAROX."
 
 api:
   - "4.0.0"
-main: xxAROX\Core\Core
+main: HQGames\Core\Core

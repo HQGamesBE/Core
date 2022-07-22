@@ -10,6 +10,7 @@ namespace HQGames\Core\simplepackethandler\interceptor;
 use Closure;
 use HQGames\Core\Core;
 use JetBrains\PhpStorm\Pure;
+use pocketmine\plugin\PluginBase;
 
 
 /**
@@ -23,7 +24,7 @@ use JetBrains\PhpStorm\Pure;
 class PacketInterceptor implements IPacketInterceptor{
 	private PacketInterceptorListener $listener;
 
-	#[Pure] public function __construct(Core $register, int $priority, bool $handleCancelled){
+	#[Pure] public function __construct(PluginBase $register, int $priority, bool $handleCancelled){
 		$this->listener = new PacketInterceptorListener($register, $priority, $handleCancelled);
 	}
 
@@ -44,6 +45,15 @@ class PacketInterceptor implements IPacketInterceptor{
 
 	public function unregisterOutgoingInterceptor(Closure $handler) : IPacketInterceptor{
 		$this->listener->unregisterOutgoingInterceptor($handler);
+		return $this;
+	}
+
+	/**
+	 * Function unregisterAll
+	 * @return IPacketInterceptor
+	 */
+	public function unregisterAll(): IPacketInterceptor{
+		$this->listener->unregisterAll();
 		return $this;
 	}
 }

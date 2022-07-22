@@ -46,4 +46,10 @@ interface IPacketMonitor{
 	 * @return IPacketMonitor
 	 */
 	public function unregisterOutgoingMonitor(Closure $handler): IPacketMonitor;
+
+	/**
+	 * Function unregisterAll
+	 * @return IPacketMonitor
+	 */
+	public function unregisterAll(): IPacketMonitor;
 }
