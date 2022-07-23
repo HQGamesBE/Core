@@ -12,7 +12,7 @@ ini_set("memory_limit", "-1");
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 $localServerPath = "C:/Users/" . getenv("USERNAME") . "/Desktop/pmmp4"; // string|null
-$NAMESPACE = "HQGames/Core";
+$NAMESPACE = "HQGames";
 $packages = [
 	"xxarox/xxtools" => ["paths" => ["src/xxAROX/xxTOOLS" => "src/xxAROX/xxTOOLS"], "encode" => false]
 ];

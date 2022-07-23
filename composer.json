@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "HQGames\\Core\\": "src/"
+            "HQGames\\": "src/"
         },
         "files": [
             "src/functions.php"
