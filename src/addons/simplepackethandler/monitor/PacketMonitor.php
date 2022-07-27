@@ -5,7 +5,7 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\simplepackethandler\monitor;
+namespace HQGames\addons\simplepackethandler\monitor;
 use Closure;
 use HQGames\Core\Core;
 use JetBrains\PhpStorm\Pure;
@@ -14,7 +14,7 @@ use pocketmine\plugin\PluginBase;
 
 /**
  * Class PacketMonitor
- * @package HQGames\Core\simplepackethandler\monitor
+ * @package HQGames\addons\simplepackethandler\monitor
  * @author Jan Sohn / xxAROX
  * @date 05. July, 2022 - 00:52
  * @ide PhpStorm

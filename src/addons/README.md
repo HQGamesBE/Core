@@ -11,7 +11,7 @@ class ExamplePlugin extends \pocketmine\plugin\PluginBase{
 		AddonManager::getInstance()->unregisterAll();
 	}
 	private function registerAddons(): void{
-		new \HQGames\Core\addons\AddonManager($this);
+		new \HQGames\addons\AddonManager($this);
 		$this->getLogger()->info("Registering addons...");
 		$addons = [
 			ExampleAddon::class,
@@ -27,7 +27,7 @@ class ExamplePlugin extends \pocketmine\plugin\PluginBase{
 	}
 }
 
-class ExampleAddon extends \HQGames\Core\addons\Addon{
+class ExampleAddon extends \HQGames\addons\Addon{
 	public function onEnable(): void{
 		$this->getLogger()->info("Example addon is enabled!");
 		/** @param \pocketmine\command\Command $command */

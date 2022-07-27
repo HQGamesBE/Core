@@ -5,14 +5,14 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\addons;
+namespace HQGames\addons;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 
 
 /**
  * Class AddonSingletonTrait
- * @package HQGames\Core\addons
+ * @package HQGames\addons
  * @author Jan Sohn / xxAROX
  * @date 22. July, 2022 - 14:34
  * @ide PhpStorm

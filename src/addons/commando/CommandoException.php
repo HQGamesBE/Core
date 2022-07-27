@@ -6,14 +6,14 @@
  */
 
 declare(strict_types=1);
-namespace HQGames\Core\commands\commando;
+namespace HQGames\addons\commando;
 /**
- * Interface PlayerCommand
- * @package HQGames\Core\commands\commando
+ * Class CommandoException
+ * @package HQGames\addons\commando
  * @author Jan Sohn / xxAROX
- * @date 22. July, 2022 - 22:58
+ * @date 22. July, 2022 - 23:11
  * @ide PhpStorm
  * @project Core
  */
-interface PlayerCommand{
+class CommandoException extends \RuntimeException{
 }

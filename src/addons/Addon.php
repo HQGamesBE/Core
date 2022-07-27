@@ -5,7 +5,7 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\addons;
+namespace HQGames\addons;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
@@ -28,7 +28,7 @@ use ReflectionClass;
 
 /**
  * Class Addon
- * @package HQGames\Core\addons
+ * @package HQGames\addons
  * @author Jan Sohn / xxAROX
  * @date 22. July, 2022 - 05:01
  * @ide PhpStorm

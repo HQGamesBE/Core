@@ -6,7 +6,7 @@
  */
 
 declare(strict_types=1);
-namespace HQGames\Core\simplepackethandler\interceptor;
+namespace HQGames\addons\simplepackethandler\interceptor;
 use Closure;
 use HQGames\Core\Core;
 use JetBrains\PhpStorm\Pure;
@@ -15,7 +15,7 @@ use pocketmine\plugin\PluginBase;
 
 /**
  * Class PacketInterceptor
- * @package HQGames\Core\simplepackethandler\interceptor
+ * @package HQGames\addons\simplepackethandler\interceptor
  * @author Jan Sohn / xxAROX
  * @date 05. July, 2022 - 00:31
  * @ide PhpStorm
@@ -24,7 +24,8 @@ use pocketmine\plugin\PluginBase;
 class PacketInterceptor implements IPacketInterceptor{
 	private PacketInterceptorListener $listener;
 
-	#[Pure] public function __construct(PluginBase $register, int $priority, bool $handleCancelled){
+	#[Pure]
+	public function __construct(PluginBase $register, int $priority, bool $handleCancelled){
 		$this->listener = new PacketInterceptorListener($register, $priority, $handleCancelled);
 	}
 

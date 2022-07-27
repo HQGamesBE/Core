@@ -5,14 +5,14 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\simplepackethandler\monitor;
+namespace HQGames\addons\simplepackethandler\monitor;
 use Closure;
 use pocketmine\network\mcpe\NetworkSession;
 
 
 /**
  * Interface IPacketMonitor
- * @package HQGames\Core\simplepackethandler\monitor
+ * @package HQGames\addons\simplepackethandler\monitor
  * @author Jan Sohn / xxAROX
  * @date 05. July, 2022 - 00:51
  * @ide PhpStorm

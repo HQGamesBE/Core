@@ -5,7 +5,7 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\simplepackethandler\utils;
+namespace HQGames\addons\simplepackethandler\utils;
 use Closure;
 use InvalidArgumentException;
 use pocketmine\event\HandlerListManager;
@@ -15,7 +15,7 @@ use ReflectionNamedType;
 
 /**
  * Class Utils
- * @package HQGames\Core\simplepackethandler\utils
+ * @package HQGames\addons\simplepackethandler\utils
  * @author Jan Sohn / xxAROX
  * @date 05. July, 2022 - 00:54
  * @ide PhpStorm

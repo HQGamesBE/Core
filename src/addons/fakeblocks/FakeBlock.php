@@ -5,7 +5,7 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\fakeblocks;
+namespace HQGames\addons\fakeblocks;
 use JetBrains\PhpStorm\Pure;
 use pocketmine\block\Block;
 use pocketmine\player\Player;
@@ -15,7 +15,7 @@ use pocketmine\world\Position;
 
 /**
  * Class FakeBlock
- * @package HQGames\Core\fakeblocks
+ * @package HQGames\addons\fakeblocks
  * @author Jan Sohn / xxAROX
  * @date 05. July, 2022 - 00:10
  * @ide PhpStorm
@@ -50,7 +50,8 @@ class FakeBlock{
 	 * Function getPosition
 	 * @return Position
 	 */
-	#[Pure] public function getPosition(): Position{
+	#[Pure]
+	public function getPosition(): Position{
 		return $this->block->getPosition();
 	}
 
@@ -67,10 +68,16 @@ class FakeBlock{
 	 * @param Player $player
 	 * @return bool
 	 */
-	#[Pure] public function isViewer(Player $player): bool{
+	#[Pure]
+	public function isViewer(Player $player): bool{
 		return is_null($this->viewers) || isset($this->viewers[$player->getId()]);
 	}
 
+	/**
+	 * Function addViewer
+	 * @param Player $player
+	 * @return void
+	 */
 	public function addViewer(Player $player): void{
 		if (!is_null($this->viewers))
 			$this->viewers[$player->getId()] = $player;
@@ -82,6 +89,11 @@ class FakeBlock{
 		}
 	}
 
+	/**
+	 * Function removeViewer
+	 * @param Player $player
+	 * @return void
+	 */
 	public function removeViewer(Player $player): void{
 		if (!is_null($this->viewers))
 			unset($this->viewers[$player->getId()]);
@@ -100,7 +112,8 @@ class FakeBlock{
 	 * @return bool
 	 * @internal
 	 */
-	#[Pure] public function isInBlockUpdatePacketQueue(Player $player): bool{
+	#[Pure]
+	public function isInBlockUpdatePacketQueue(Player $player): bool{
 		return isset($this->blockUpdatePacketQueue[$player->getId()]);
 	}
 

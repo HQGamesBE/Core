@@ -5,17 +5,18 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\fakeblocks;
+namespace HQGames\addons\fakeblocks;
 use Exception;
-use HQGames\Core\addons\Addon;
-use HQGames\Core\addons\AddonSingletonTrait;
-use HQGames\Core\simplepackethandler\SimplePacketHandler;
+use HQGames\addons\Addon;
+use HQGames\addons\AddonSingletonTrait;
+use HQGames\addons\simplepackethandler\SimplePacketHandler;
 use pocketmine\block\Block;
 use pocketmine\event\EventPriority;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerPostChunkSendEvent;
 use pocketmine\network\mcpe\convert\RuntimeBlockMapping;
 use pocketmine\network\mcpe\NetworkSession;
+use pocketmine\network\mcpe\protocol\PlayerActionPacket;
 use pocketmine\network\mcpe\protocol\types\BlockPosition;
 use pocketmine\network\mcpe\protocol\UpdateBlockPacket;
 use pocketmine\player\Player;
@@ -29,7 +30,7 @@ use TypeError;
 
 /**
  * Class FakeBlockManager
- * @package HQGames\Core\fakeblocks
+ * @package HQGames\addons\fakeblocks
  * @author IvanCraft623
  * @date 05. July, 2022 - 00:09
  * @ide PhpStorm
@@ -59,6 +60,10 @@ class FakeBlockManager extends Addon implements Listener{
 		];
 	}
 
+	/**
+	 * Function onEnable
+	 * @return void
+	 */
 	public function onEnable(): void{
 		$this->registerListener($this);
 		$interceptor = SimplePacketHandler::getInstance()->createInterceptor(EventPriority::HIGHEST);
@@ -79,10 +84,21 @@ class FakeBlockManager extends Addon implements Listener{
 		});
 	}
 
+	/**
+	 * Function onDisable
+	 * @return void
+	 */
 	public function onDisable(): void{
 
 	}
 
+	/**
+	 * Function createFakeBlock
+	 * @param Block $block
+	 * @param Position $position
+	 * @param null|array $viewers
+	 * @return FakeBlock
+	 */
 	public function createFakeBlock(Block $block, Position $position, ?array $viewers = null): FakeBlock{
 		$pos = Position::fromObject($position->floor(), $position->getWorld());
 		$fakeblock = new FakeBlock($block, $pos, $viewers);
@@ -157,6 +173,7 @@ class FakeBlockManager extends Addon implements Listener{
 	 * @param PlayerPostChunkSendEvent $event
 	 * @return void
 	 * @priority MONITOR
+	 * @internal
 	 */
 	public function PlayerPostChunkSendEvent(PlayerPostChunkSendEvent $event): void{
 		$player = $event->getPlayer();

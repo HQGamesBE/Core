@@ -12,7 +12,7 @@
             "HQGames\\": "src/"
         },
         "files": [
-            "src/functions.php"
+            "src/Core/functions.php"
         ]
     },
     "authors": [

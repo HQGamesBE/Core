@@ -5,20 +5,20 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\simplepackethandler;
-use HQGames\Core\addons\Addon;
-use HQGames\Core\addons\AddonSingletonTrait;
-use HQGames\Core\simplepackethandler\interceptor\IPacketInterceptor;
-use HQGames\Core\simplepackethandler\interceptor\PacketInterceptor;
-use HQGames\Core\simplepackethandler\monitor\IPacketMonitor;
-use HQGames\Core\simplepackethandler\monitor\PacketMonitor;
+namespace HQGames\addons\simplepackethandler;
+use HQGames\addons\Addon;
+use HQGames\addons\AddonSingletonTrait;
+use HQGames\addons\simplepackethandler\interceptor\IPacketInterceptor;
+use HQGames\addons\simplepackethandler\interceptor\PacketInterceptor;
+use HQGames\addons\simplepackethandler\monitor\IPacketMonitor;
+use HQGames\addons\simplepackethandler\monitor\PacketMonitor;
 use InvalidArgumentException;
 use pocketmine\event\EventPriority;
 
 
 /**
  * Class SimplePacketHandler
- * @package HQGames\Core\simplepackethandler
+ * @package HQGames\addons\simplepackethandler
  * @author Muqsit Rayyan
  * @date 05. July, 2022 - 00:29
  * @ide PhpStorm

@@ -6,10 +6,10 @@
  */
 
 declare(strict_types=1);
-namespace HQGames\Core\commands\commando;
+namespace HQGames\addons\commando;
 /**
  * Interface ConsoleCommand
- * @package HQGames\Core\commands\commando
+ * @package HQGames\addons\commando
  * @author Jan Sohn / xxAROX
  * @date 22. July, 2022 - 22:57
  * @ide PhpStorm

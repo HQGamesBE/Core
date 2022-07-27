@@ -6,7 +6,7 @@
  */
 
 declare(strict_types=1);
-namespace HQGames\Core\addons;
+namespace HQGames\addons;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use pocketmine\plugin\PluginBase;
@@ -19,7 +19,7 @@ use function Sodium\add;
 
 /**
  * Class AddonManager
- * @package HQGames\Core\addons
+ * @package HQGames\addons
  * @author Jan Sohn / xxAROX
  * @date 22. July, 2022 - 05:23
  * @ide PhpStorm

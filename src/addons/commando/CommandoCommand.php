@@ -6,7 +6,7 @@
  */
 
 declare(strict_types=1);
-namespace HQGames\Core\commands\commando;
+namespace HQGames\addons\commando;
 use HQGames\Bridge\Bridge;
 use HQGames\Bridge\Cache;
 use HQGames\Bridge\player\BridgePlayer;
@@ -30,7 +30,7 @@ use pocketmine\Server;
 
 /**
  * Class CommandoCommand
- * @package HQGames\Core\commands\commando
+ * @package HQGames\addons\commando
  * @author Jan Sohn / xxAROX
  * @date 22. July, 2022 - 19:58
  * @ide PhpStorm
@@ -183,12 +183,9 @@ abstract class CommandoCommand extends Command{
 	 */
 	public final function setGeneralPermission(?string $permission): void{
 		if (!is_null($permission)) {
-			if (count($ex = explode(";", $permission)) > 1) {
-				$permission = $ex[0];
-			}
-			if (PermissionManager::getInstance()->getPermission($permission) === null) {
-				Permissions::getInstance()->registerPermission(new Permission($permission, "Allows to use the entire '/{$this->getName()}' command."));
-			}
+			if (count($ex = explode(";", $permission)) > 1) $permission = $ex[0];
+			if (PermissionManager::getInstance()->getPermission($permission) === null)
+				throw new \InvalidArgumentException("Permission '$permission' does not exist");
 		}
 		$this->generalPermission = $permission;
 	}
