@@ -7,13 +7,12 @@
 
 declare(strict_types=1);
 namespace HQGames\Core\commands;
-use HQGames\Core\Permissions;
+use HQGames\Permissions;
 use HQGames\Core\player\Player;
 use HQGames\Core\Tests;
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\utils\CommandException;
-use pocketmine\lang\Translatable;
 
 
 /**
@@ -30,7 +29,7 @@ class TestCommand extends Command{
 	 */
 	public function __construct(){
 		parent::__construct("test", "Test command", "/test help", []);
-		$this->setPermission(Permissions::COMMAND_TEST);
+		$this->setPermission(Permissions::COMMAND_TEST[0]);
 	}
 
 	/**

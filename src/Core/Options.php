@@ -22,11 +22,13 @@ use pocketmine\world\Position;
 class Options{
 	public static string $player_class = Player::class;
 	public static bool $enable_corps = true;
+	public static int $default_coins = 5000;
 	/** @var Position[] */
 	public static array $start_jump_and_run_positions = [];
 
 	static function load(): void{
 		$config = Core::getInstance()->getConfig();
-		self::$start_jump_and_run_positions = $config["start_jump_and_run_positions"];
+		self::$start_jump_and_run_positions = $config["start_jump_and_run_positions"] ?? [];
+		self::$default_coins = $config["default_coins"] ?? self::$default_coins;
 	}
 }

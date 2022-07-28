@@ -1,6 +1,12 @@
 <?php
+/*
+ * Copyright (c) Jan Sohn / xxAROX
+ * All rights reserved.
+ * I don't want anyone to use my source code without permission.
+ */
+
 declare(strict_types=1);
-namespace HQGames\Core\forms;
+namespace HQGames\forms\types;
 use Closure;
 use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
@@ -13,7 +19,7 @@ use function is_bool;
 
 /**
  * Class ModalForm
- * @package HQGames\Core\forms\forms
+ * @package HQGames\forms\forms\types
  * @author Jan Sohn / xxAROX
  * @date 05. July, 2022 - 00:01
  * @ide PhpStorm
@@ -29,11 +35,12 @@ class ModalForm extends Form{
 	 * ModalForm constructor.
 	 * @param string $title
 	 * @param string $text
-	 * @param Closure $onSubmit
+	 * @param Closure $onSubmit (Player $player, bool $yes): void
 	 * @param string $yesButton
 	 * @param string $noButton
 	 */
-	#[Pure] public function __construct(string $title, string $text, Closure $onSubmit, string $yesButton = "gui.yes", string $noButton = "gui.no"){
+	#[Pure]
+	public function __construct(string $title, string $text, Closure $onSubmit, string $yesButton = "%forms.yes", string $noButton = "%forms.no"){
 		parent::__construct($title);
 		$this->text = $text;
 		$this->yesButton = $yesButton;

@@ -1,12 +1,18 @@
 <?php
+/*
+ * Copyright (c) Jan Sohn / xxAROX
+ * All rights reserved.
+ * I don't want anyone to use my source code without permission.
+ */
+
 declare(strict_types=1);
-namespace HQGames\Core\forms;
+namespace HQGames\forms\types;
 use Closure;
 
 
 /**
  * Class Form
- * @package HQGames\Core\forms
+ * @package HQGames\forms\types
  * @author Jan Sohn / xxAROX
  * @date 04. July, 2022 - 23:57
  * @ide PhpStorm
@@ -39,8 +45,7 @@ abstract class Form implements \pocketmine\form\Form{
 	 * @return array
 	 */
 	final public function jsonSerialize(): array{
-		if ($this->onCreate !== null)
-			($this->onCreate)();
+		if ($this->onCreate !== null) ($this->onCreate)();
 		return array_merge([
 			"title" => $this->getTitle(),
 			"type"  => $this->getType(),
@@ -56,7 +61,6 @@ abstract class Form implements \pocketmine\form\Form{
 
 	/**
 	 * @param string $title
-	 *
 	 * @return $this
 	 */
 	public function setTitle(string $title): self{
@@ -76,7 +80,6 @@ abstract class Form implements \pocketmine\form\Form{
 
 	/**
 	 * @param Closure $onCreate
-	 *
 	 * @return $this
 	 */
 	public function setOnCreate(Closure $onCreate): self{
@@ -86,7 +89,6 @@ abstract class Form implements \pocketmine\form\Form{
 
 	/**
 	 * @param Closure $onDestroy
-	 *
 	 * @return $this
 	 */
 	public function setOnDestroy(Closure $onDestroy): self{

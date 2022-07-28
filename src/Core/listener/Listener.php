@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 namespace HQGames\Core\listener;
-use HQGames\Core\fakeblocks\FakeBlockManager;
+use HQGames\addons\fakeblocks\FakeBlockManager;
 use HQGames\Core\Options;
 use HQGames\Core\player\details\Scoreboard;
 use HQGames\Core\player\Player;

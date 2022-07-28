@@ -1,13 +1,19 @@
 <?php
+/*
+ * Copyright (c) Jan Sohn / xxAROX
+ * All rights reserved.
+ * I don't want anyone to use my source code without permission.
+ */
+
 declare(strict_types=1);
-namespace HQGames\Core\forms;
-use HQGames\Core\forms\elements\{Dropdown, Element, Input, Label, Slider, StepSlider, Toggle};
+namespace HQGames\forms\types;
+use HQGames\forms\elements\{Dropdown, Element, Input, Label, Slider, StepSlider, Toggle};
 use pocketmine\form\FormValidationException;
 
 
 /**
  * Class CustomFormResponse
- * @package HQGames\Core\forms
+ * @package HQGames\forms\types
  * @author Jan Sohn / xxAROX
  * @date 04. July, 2022 - 23:54
  * @ide PhpStorm
@@ -42,7 +48,8 @@ class CustomFormResponse{
 	public function tryGet(string $expected = Element::class){ //why PHP still hasn't templates???
 		if (($element = array_shift($this->elements)) instanceof Label) {
 			return $this->tryGet($expected); //remove useless element
-		} else if ($element === null || !($element instanceof $expected)) {
+		}
+		else if ($element === null || !($element instanceof $expected)) {
 			throw new FormValidationException("Expected a element with of type $expected, got " . get_class($element));
 		}
 		return $element;
@@ -95,8 +102,7 @@ class CustomFormResponse{
 	public function getValues(): array{
 		$values = [];
 		foreach ($this->elements as $element) {
-			if ($element instanceof Label)
-				continue;
+			if ($element instanceof Label) continue;
 			$values[] = $element instanceof Dropdown ? $element->getSelectedOption() : $element->getValue();
 		}
 		return $values;

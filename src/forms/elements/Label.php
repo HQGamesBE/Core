@@ -5,19 +5,27 @@
  * I don't want anyone to use my source code without permission.
  */
 declare(strict_types=1);
-namespace HQGames\Core\forms\elements;
+namespace HQGames\forms\elements;
 use pocketmine\form\FormValidationException;
 
 
 /**
  * Class Label
- * @package HQGames\Core\forms\elements
+ * @package HQGames\forms\elements
  * @author Jan Sohn / xxAROX
  * @date 04. July, 2022 - 23:44
  * @ide PhpStorm
  * @project Core
  */
 class Label extends Element{
+	/**
+	 * Label constructor.
+	 * @param string $text
+	 */
+	public function __construct(string $text){
+		parent::__construct($text);
+	}
+
 	/**
 	 * Function getType
 	 * @return string

@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
-namespace HQGames\Core\forms\elements;
+namespace HQGames\forms\elements;
 use JetBrains\PhpStorm\ArrayShape;
 use JsonSerializable;
 
 
 /**
  * Class Image
- * @package HQGames\Core\forms\elements
+ * @package HQGames\forms\elements
  * @author Jan Sohn / xxAROX
  * @date 04. July, 2022 - 23:44
  * @ide PhpStorm

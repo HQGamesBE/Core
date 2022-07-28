@@ -7,11 +7,12 @@
 
 declare(strict_types=1);
 namespace HQGames\Core;
-use HQGames\Core\addons\AddonManager;
-use HQGames\Core\commands\commando\Commando;
+use HQGames\addons\AddonManager;
+use HQGames\addons\commando\Commando;
 use HQGames\Core\commands\TestCommand;
-use HQGames\Core\fakeblocks\FakeBlockManager;
-use HQGames\Core\simplepackethandler\SimplePacketHandler;
+use HQGames\addons\fakeblocks\FakeBlockManager;
+use HQGames\addons\simplepackethandler\SimplePacketHandler;
+use HQGames\Permissions;
 use pocketmine\permission\Permission;
 use pocketmine\permission\PermissionManager;
 use pocketmine\plugin\PluginBase;
@@ -67,9 +68,7 @@ class Core extends PluginBase{
 	 */
 
 	private function registerCommands(): void{
-		foreach ((new ReflectionClass(Permissions::class))->getConstants() as $constant => $permission) {
-			PermissionManager::getInstance()->addPermission(new Permission($permission, "Use the {$constant} command"));
-		}
+		Permissions::register();
 		$commands = [
 			new TestCommand,
 		];

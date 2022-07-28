@@ -8,6 +8,7 @@
 declare(strict_types=1);
 namespace HQGames\Core\player;
 use HQGames\Bridge\player\BridgePlayer;
+use HQGames\Core\entities\details\Corpse;
 use HQGames\Core\Options;
 use HQGames\Core\player\details\Scoreboard;
 use pocketmine\event\entity\EntityDamageByEntityEvent;

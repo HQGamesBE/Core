@@ -7,8 +7,8 @@
 
 declare(strict_types=1);
 namespace HQGames\Core\jumpandrun;
-use HQGames\Core\fakeblocks\FakeBlock;
-use HQGames\Core\fakeblocks\FakeBlockManager;
+use HQGames\addons\fakeblocks\FakeBlock;
+use HQGames\addons\fakeblocks\FakeBlockManager;
 use HQGames\Core\player\Player;
 use JetBrains\PhpStorm\Pure;
 use pocketmine\math\Vector3;

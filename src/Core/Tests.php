@@ -8,8 +8,8 @@
 declare(strict_types=1);
 namespace HQGames\Core;
 use Closure;
-use HQGames\Core\forms\elements\FunctionalButton;
-use HQGames\Core\forms\MenuForm;
+use HQGames\forms\elements\Button;
+use HQGames\forms\types\MenuForm;
 use pocketmine\utils\SingletonTrait;
 use ReflectionClass;
 
@@ -37,15 +37,15 @@ class Tests{
 	 */
 	function getForm(): MenuForm{
 		$buttons = [];
-		foreach ((new ReflectionClass(self::class))->getMethods(\ReflectionMethod::IS_PUBLIC) as $method){
+		foreach ((new ReflectionClass(self::class))->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
 			if ($method->getName() === "__construct") continue;
 			if ($method->getName() === "getForm") continue;
-			$buttons[] = new FunctionalButton($method->getName(), Closure::fromCallable([$this, $method->getName()]));
+			$buttons[] = new Button($method->getName(), Closure::fromCallable([$this, $method->getName()]));
 		}
 		return new MenuForm(
 			"§dTests",
-			",",
-			$buttons
+			"",
+			$buttons,
 		);
 	}
 }
